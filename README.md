@@ -1,264 +1,67 @@
-# 📦 Project Setup
+Module 10: Secure User Model with CI/CD
+This repository contains the solution for Module 10, focusing on building a secure user authentication system within a FastAPI application, integrating with a PostgreSQL database, and establishing a robust Continuous Integration/Continuous Delivery (CI/CD) pipeline using Docker and GitHub Actions.
 
----
+Project Overview
+The primary objective of this module was to extend foundational database knowledge to implement a secure user model. This involved defining a User model with SQLAlchemy for persistent storage, validating user data with Pydantic, and ensuring password security through hashing. A comprehensive CI/CD pipeline was configured to automate testing, security scanning, and deployment of the Dockerized application to Docker Hub, adhering to modern DevOps principles.
 
-# 🧩 1. Install Homebrew (Mac Only)
+Key Features and Learning Outcomes
+This project demonstrates:
 
-> Skip this step if you're on Windows.
+Secure User Model: Implementation of a User model storing hashed passwords and enforcing unique constraints for username and email.
 
-Homebrew is a package manager for macOS.  
-You’ll use it to easily install Git, Python, Docker, etc.
+Data Validation: Use of Pydantic schemas (UserCreate, UserRead) for robust validation and serialization of user data.
 
-**Install Homebrew:**
+Automated Testing: Development and execution of unit and integration tests, with integration tests leveraging a PostgreSQL container within GitHub Actions.
 
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
+CI/CD Pipeline: A fully automated workflow to build, scan (using Trivy), and deploy the Docker image to Docker Hub upon successful test completion.
 
-**Verify Homebrew:**
+Containerization: Application of Docker for containerizing the FastAPI application.
 
-```bash
-brew --version
-```
+Database Integration: Integration with a SQL database (PostgreSQL) for data creation and manipulation.
 
-If you see a version number, you're good to go.
+How to Run Tests Locally
+To set up the project and run tests on your local machine, follow these steps:
 
----
+Clone the repository:
 
-# 🧩 2. Install and Configure Git
+git clone git@github.com:camerunhannah/Assignment-10.git
+cd Assignment-10/module10_is601
 
-## Install Git
+Create and activate a Python virtual environment:
 
-- **MacOS (using Homebrew)**
+python -m venv venv
+source venv/bin/activate
 
-```bash
-brew install git
-```
+Install project dependencies:
 
-- **Windows**
-
-Download and install [Git for Windows](https://git-scm.com/download/win).  
-Accept the default options during installation.
-
-**Verify Git:**
-
-```bash
-git --version
-```
-
----
-
-## Configure Git Globals
-
-Set your name and email so Git tracks your commits properly:
-
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your_email@example.com"
-```
-
-Confirm the settings:
-
-```bash
-git config --list
-```
-
----
-
-## Generate SSH Keys and Connect to GitHub
-
-> Only do this once per machine.
-
-1. Generate a new SSH key:
-
-```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
-```
-
-(Press Enter at all prompts.)
-
-2. Start the SSH agent:
-
-```bash
-eval "$(ssh-agent -s)"
-```
-
-3. Add the SSH private key to the agent:
-
-```bash
-ssh-add ~/.ssh/id_ed25519
-```
-
-4. Copy your SSH public key:
-
-- **Mac/Linux:**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | pbcopy
-```
-
-- **Windows (Git Bash):**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | clip
-```
-
-5. Add the key to your GitHub account:
-   - Go to [GitHub SSH Settings](https://github.com/settings/keys)
-   - Click **New SSH Key**, paste the key, save.
-
-6. Test the connection:
-
-```bash
-ssh -T git@github.com
-```
-
-You should see a success message.
-
----
-
-# 🧩 3. Clone the Repository
-
-Now you can safely clone the course project:
-
-```bash
-git clone <repository-url>
-cd <repository-directory>
-```
-
----
-
-# 🛠️ 4. Install Python 3.10+
-
-## Install Python
-
-- **MacOS (Homebrew)**
-
-```bash
-brew install python
-```
-
-- **Windows**
-
-Download and install [Python for Windows](https://www.python.org/downloads/).  
-✅ Make sure you **check the box** `Add Python to PATH` during setup.
-
-**Verify Python:**
-
-```bash
-python3 --version
-```
-or
-```bash
-python --version
-```
-
----
-
-## Create and Activate a Virtual Environment
-
-(Optional but recommended)
-
-```bash
-python3 -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate.bat  # Windows
-```
-
-### Install Required Packages
-
-```bash
+pip install --upgrade pip
 pip install -r requirements.txt
-```
 
----
+Install Playwright browser dependencies (for end to end tests):
 
-# 🐳 5. (Optional) Docker Setup
+sudo ../venv/bin/playwright install-deps
 
-> Skip if Docker isn't used in this module.
+Start Docker Compose services (PostgreSQL, pgAdmin, and FastAPI app):
+Ensure Docker Desktop is running. Navigate to the module10_is601 directory if you are not already there. If you encounter any conflicts, run docker compose down -v first.
 
-## Install Docker
+docker compose up --build -d
 
-- [Install Docker Desktop for Mac](https://www.docker.com/products/docker-desktop/)
-- [Install Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
+Run tests:
 
-## Build Docker Image
+pytest
 
-```bash
-docker build -t <image-name> .
-```
+CI/CD Pipeline and Docker Hub Deployment
+This project utilizes GitHub Actions for its CI/CD pipeline. Upon every push to the main branch, the workflow automatically:
 
-## Run Docker Container
+Checks out the code.
 
-```bash
-docker run -it --rm <image-name>
-```
+Sets up Python and caches pip dependencies.
 
----
+Installs project dependencies.
 
-# 🚀 6. Running the Project
+Runs all unit, integration, and end to end tests against a dedicated PostgreSQL container.
 
-- **Without Docker**:
+Builds the Docker image for the application.
 
-```bash
-python main.py
-```
+Scans the Docker image for vulnerabilities using Trivy.
 
-(or update this if the main script is different.)
-
-- **With Docker**:
-
-```bash
-docker run -it --rm <image-name>
-```
-
----
-
-# 📝 7. Submission Instructions
-
-After finishing your work:
-
-```bash
-git add .
-git commit -m "Complete Module X"
-git push origin main
-```
-
-Then submit the GitHub repository link as instructed.
-
----
-
-# 🔥 Useful Commands Cheat Sheet
-
-| Action                         | Command                                          |
-| ------------------------------- | ------------------------------------------------ |
-| Install Homebrew (Mac)          | `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` |
-| Install Git                     | `brew install git` or Git for Windows installer |
-| Configure Git Global Username  | `git config --global user.name "Your Name"`      |
-| Configure Git Global Email     | `git config --global user.email "you@example.com"` |
-| Clone Repository                | `git clone <repo-url>`                          |
-| Create Virtual Environment     | `python3 -m venv venv`                           |
-| Activate Virtual Environment   | `source venv/bin/activate` / `venv\Scripts\activate.bat` |
-| Install Python Packages        | `pip install -r requirements.txt`               |
-| Build Docker Image              | `docker build -t <image-name> .`                |
-| Run Docker Container            | `docker run -it --rm <image-name>`               |
-| Push Code to GitHub             | `git add . && git commit -m "message" && git push` |
-
----
-
-# 📋 Notes
-
-- Install **Homebrew** first on Mac.
-- Install and configure **Git** and **SSH** before cloning.
-- Use **Python 3.10+** and **virtual environments** for Python projects.
-- **Docker** is optional depending on the project.
-
----
-
-# 📎 Quick Links
-
-- [Homebrew](https://brew.sh/)
-- [Git Downloads](https://git-scm.com/downloads)
-- [Python Downloads](https://www.python.org/downloads/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [GitHub SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
